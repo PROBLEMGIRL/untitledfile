@@ -3,140 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>친절한 조형관 수색 매뉴얼</title>
+    <title>친절한 조형관 탐색기</title>
     <style>
-        @keyframes flicker {
-            0% { opacity: 1; }
-            50% { opacity: 0.8; }
-            100% { opacity: 1; }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=MS+Sans+Serif&display=swap');
         
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            height: 100vh;
-            background: black;
-            color: #00ffcc;
-            animation: flicker 0.2s infinite;
-        }
-        #sidebar {
-            width: 250px;
-            background: #222;
-            padding: 15px;
-            overflow-y: auto;
+            font-family: 'MS Sans Serif', sans-serif;
+            background-color: #000;
             color: white;
-            border-right: 2px solid #00ffcc;
+            overflow: hidden;
         }
-        #content {
-            flex: 1;
-            padding: 20px;
-            background: #111;
-            color: #00ffcc;
-            border-left: 2px solid #00ffcc;
+        .desktop {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
         }
-        .doc {
+        .icon {
+            display: inline-block;
+            text-align: center;
+            width: 80px;
+            margin: 20px;
+            cursor: pointer;
+        }
+        .window {
+            position: absolute;
+            width: 500px;
+            height: 300px;
+            background: #FFFFFF;
+            border: 3px solid black;
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+            display: none;
+            transition: transform 0.1s ease-in-out;
+        }
+        .title-bar {
+            background: linear-gradient(to right, navy, blue);
+            color: white;
+            padding: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+        .content {
+            padding: 10px;
+            font-family: 'MS Sans Serif', sans-serif;
+            color: black;
+            background: white;
+            height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .deleted-text {
+            color: red;
+            text-decoration: line-through;
+        }
+        .hidden-comment {
+            font-size: 10px;
+            color: gray;
             display: none;
         }
-        .active {
-            display: block;
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #C0C0C0;
+            border-top: 2px solid #808080;
+            box-shadow: inset 0px 2px #FFFFFF, inset 0px -2px #808080;
+            padding: 5px;
+            text-align: left;
+            border-top: 2px solid gray;
+            display: flex;
+            align-items: center;
         }
-        .sidebar-item {
-            padding: 10px;
+        .start-btn {
+            background: silver;
+            color: black;
+            padding: 8px;
+            font-size: 14px;
             cursor: pointer;
-            border-bottom: 1px solid #444;
-            transition: background 0.3s;
-            color: #00ffcc;
+            border: 2px outset gray;
+            margin-left: 5px;
         }
-        .sidebar-item:hover {
-            background: #333;
+        .start-menu {
+            display: none;
+            position: absolute;
+            bottom: 40px;
+            left: 10px;
+            background: white;
+            border: 2px solid black;
+            padding: 10px;
         }
-        .question {
-            margin-top: 20px;
+        #password-container {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
         }
-        .question h3 {
-            margin-bottom: 10px;
+        #password-input {
+            padding: 5px;
+            font-size: 14px;
         }
-        .question input {
-            margin-right: 10px;
+        #timer {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            color: red;
         }
     </style>
-</head>
-<body>
-    <audio id="creepySound" loop>
-        <source src="https://www.fesliyanstudios.com/play-mp3/4383" type="audio/mpeg">
-    </audio>
-    <div id="sidebar">
-        <h2>사건 파일</h2>
-        <div class="sidebar-item" onclick="showDoc('doc1')">📜 거울 속 소녀귀신 보고서</div>
-        <div class="sidebar-item" onclick="showDoc('doc2')">📜 F씨 실종 사건 기록</div>
-        <div class="sidebar-item" onclick="showDoc('doc3')">📜 경비원 O의 업무 일지</div>
-    </div>
-    <div id="content">
-        <div id="doc1" class="doc active">
-            <h2>📜 거울 속 소녀귀신 보고서</h2>
-            <p><strong>사건 개요:</strong> 조형관 내부 거울에서 정체불명의 존재가 목격됨. 특정 시간대에만 활동하는 것으로 추정됨.</p>
-            <p><strong>공식 지침:</strong> "거울 속 소녀귀신을 설득하면 탈출할 수 있다."</p>
-            <p><strong>수색자 D의 증언:</strong> "말도 안 되는 소리. 소녀귀신을 만난 F씨는 사라졌음. 설득으로 풀리는 문제가 아님."</p>
-            <p><strong>관리자 주석:</strong> "이 문서가 조작된 흔적이 있습니다. 정확한 정보인지 확인되지 않았습니다."</p>
-            
-            <!-- 객관식 질문 추가 -->
-            <div class="question">
-                <h3>Q1. 거울 속 소녀귀신에 대한 공식 지침은 무엇인가?</h3>
-                <label><input type="radio" name="q1" value="a"> 소녀귀신을 없애면 탈출할 수 있다.</label><br>
-                <label><input type="radio" name="q1" value="b"> 소녀귀신을 설득하면 탈출할 수 있다.</label><br>
-                <label><input type="radio" name="q1" value="c"> 소녀귀신과 싸워야 탈출할 수 있다.</label><br>
-                <label><input type="radio" name="q1" value="d"> 소녀귀신을 무시하면 탈출할 수 있다.</label><br>
-            </div>
-        </div>
-
-        <div id="doc2" class="doc">
-            <h2>📜 F씨 실종 사건 기록</h2>
-            <p><strong>사건 일시:</strong> 20XX년 X월 X일, 8차 수색 중</p>
-            <p><strong>목격자 증언:</strong> "F씨는 거울 속 존재를 만났다. 하지만 그것은 우리가 예상했던 소녀귀신이 아니었다."</p>
-            <p><strong>마지막 기록:</strong> "나는 그 존재와 눈을 마주쳤다. 그리고..." (이후 기록 없음)</p>
-            
-            <!-- 객관식 질문 추가 -->
-            <div class="question">
-                <h3>Q2. F씨가 만난 존재는 무엇이었는가?</h3>
-                <label><input type="radio" name="q2" value="a"> 소녀귀신</label><br>
-                <label><input type="radio" name="q2" value="b"> 거울 속 남자</label><br>
-                <label><input type="radio" name="q2" value="c"> 알 수 없는 존재</label><br>
-                <label><input type="radio" name="q2" value="d"> 다른 인간</label><br>
-            </div>
-        </div>
-
-        <div id="doc3" class="doc">
-            <h2>📜 경비원 O의 업무 일지</h2>
-            <p><strong>최근 보고:</strong> 거울 속 존재가 "새로운 인물"을 반영하기 시작했다는 증언이 다수 접수됨.</p>
-            <p><strong>보안 강화 조치:</strong> 조형관 내 거울을 제거하려는 시도 진행 중. 그러나 거울을 치우는 즉시 다른 곳에 다시 나타나는 현상 보고됨.</p>
-            
-            <!-- 객관식 질문 추가 -->
-            <div class="question">
-                <h3>Q3. 경비원 O는 무엇을 보고했는가?</h3>
-                <label><input type="radio" name="q3" value="a"> 거울 속 존재가 새로운 인물을 반영하기 시작했다.</label><br>
-                <label><input type="radio" name="q3" value="b"> 거울 속 존재가 사라졌다.</label><br>
-                <label><input type="radio" name="q3" value="c"> 거울 속 존재가 계속 변하고 있다.</label><br>
-                <label><input type="radio" name="q3" value="d"> 거울 속 존재가 안전해졌다.</label><br>
-            </div>
-        </div>
-    </div>
-
     <script>
-        function showDoc(id) {
-            document.querySelectorAll('.doc').forEach(doc => doc.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            
-            // 랜덤하게 화면 깜빡임 효과
-            if (Math.random() > 0.7) {
-                document.body.style.opacity = "0.5";
-                setTimeout(() => document.body.style.opacity = "1", 100);
+        let timer;
+        let timeLeft = 180;  // 3 minutes
+
+        function startTimer() {
+            timer = setInterval(function() {
+                timeLeft--;
+                document.getElementById('timer').textContent = `남은 시간: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert("시간 초과! 게임이 종료되었습니다.");
+                    exitGame();
+                }
+            }, 1000);
+        }
+
+        function openPreview(fileId) {
+            let file = document.getElementById(fileId);
+            file.style.display = "block";
+        }
+
+        function closeFile(fileId) {
+            document.getElementById(fileId).style.display = "none";
+        }
+
+        function startMenuToggle() {
+            let menu = document.querySelector(".start-menu");
+            menu.style.display = (menu.style.display === "block") ? "none" : "block";
+        }
+
+        function revealComment(id) {
+            document.getElementById(id).style.display = "block";
+        }
+
+        function restartGame() {
+            location.reload();
+        }
+
+        function exitGame() {
+            if (confirm("정말 종료하시겠습니까?")) {
+                window.open('', '_self', '');
+                window.close();
             }
         }
-        
-        window.onload = function() {
-            setTimeout(() => document.getElementById("creepySound").play(), 3000);
+
+        function checkPassword() {
+            const password = document.getElementById('password-input').value;
+            if (password === '1234') {  // 예시로 설정된 암호
+                alert("암호가 맞습니다! 탈출 성공!");
+                exitGame();
+            } else {
+                alert("암호가 틀렸습니다. 다시 시도해 주세요.");
+            }
         }
     </script>
+</head>
+<body onload="startTimer()">
+    <div class="desktop">
+        <div class="icon" onclick="openPreview('file1')">
+            <img src="txtfile.png" width="50" height="56" alt="파일 아이콘">
+            <span>수색 매뉴얼.txt</span>
+        </div>
+        <div class="icon" onclick="openPreview('file2')">
+            <img src="txtfile.png" width="50" height="56" alt="파일 아이콘">
+            <span>F씨 실종 기록.txt</span>
+        </div>
+        <div class="icon" onclick="openPreview('file3')">
+            <img src="txtfile.png" width="50" height="56" alt="파일 아이콘">
+            <span>경비원 보고서.txt</span>
+        </div>
+        
+        <div class="taskbar">
+            <button class="start-btn" onclick="startMenuToggle()">시작</button>
+            <div class="start-menu">
+                <button onclick="restartGame()">🔄 다시 시작</button>
+                <button onclick="exitGame()">❌ 종료</button>
+            </div>
+        </div>
+
+        <div id="file1" class="window">
+            <div class="title-bar">
+                <span>📄 수색 매뉴얼 - 메모장</span>
+                <button onclick="closeFile('file1')">X</button>
+            </div>
+            <div class="content">
+                탐색 매뉴얼 내용이 여기에 들어갑니다. 
+                <span class="deleted-text">이 문장은 삭제되었습니다.</span> 
+                <button onclick="revealComment('comment1')">(이전 기록 보기)</button>
+                <div id="comment1" class="hidden-comment">[기록 없음]</div>
+                <br><br>
+                <b>문제:</b> 수색을 시작하기 위한 첫 번째 단계는 무엇인가요?
+                <ol>
+                    <li>조사</li>
+                    <li>준비</li>
+                    <li>출발</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="file2" class="window">
+            <div class="title-bar">
+                <span>📄 F씨 실종 기록 - 메모장</span>
+                <button onclick="closeFile('file2')">X</button>
+            </div>
+            <div class="content">
+                실종 기록 내용이 여기에 들어갑니다. ██ [ERROR] ██
+                <div class="hidden-comment">너도 여기 있었구나.</div>
+                <br><br>
+                <b>문제:</b> 실종자가 마지막으로 목격된 장소는 어디인가요?
+                <ol>
+                    <li>도서관</li>
+                    <li>연못</li>
+                    <li>주차장</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="file3" class="window">
+            <div class="title-bar">
+                <span>📄 경비원 보고서 - 메모장</span>
+                <button onclick="closeFile('file3')">X</button>
+            </div>
+            <div class="content">
+                경비원 보고서 내용이 여기에 들어갑니다. [기록 손실됨]
+                <br><br>
+                <b>문제:</b> 경비원 보고서에 따르면 사건이 발생한 시간은 언제인가요?
+                <ol>
+                    <li>오전 10시</li>
+                    <li>오후 3시</li>
+                    <li>밤 9시</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="password-container">
+            
+            <label for="password-input">암호 입력:</label>
+            <input type="text" id="password-input" placeholder="암호를 입력하세요">
+            <button onclick="checkPassword()">확인</button>
+        </div>
+
+        <div id="timer">남은 시간: 180s</div>
+    </div>
 </body>
 </html>
